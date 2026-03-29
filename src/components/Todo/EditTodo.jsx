@@ -1,57 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
-import { Edit2, X, Calendar, Type, AlignLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabase";
+import { Edit2, X, Calendar, Type, AlignLeft } from "lucide-react";
 
 export const EditTodo = ({ todo, onUpdate, onClose }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (todo) {
       setTitle(todo.title);
-      setDescription(todo.description || '');
+      setDescription(todo.description || "");
       setDueDate(todo.due_date);
     }
   }, [todo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!title.trim()) {
-      setError('Title is required');
+      setError("Title is required");
       return;
     }
-    
+
     if (!dueDate) {
-      setError('Due date is required');
+      setError("Due date is required");
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
-      
+      setError("");
+
       const { data, error } = await supabase
-        .from('todos')
+        .from("todos")
         .update({
           title: title.trim(),
           description: description.trim(),
           due_date: dueDate,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', todo.id)
+        .eq("id", todo.id)
         .select()
         .single();
 
       if (error) throw error;
-      
+
       onUpdate(data);
       onClose();
     } catch (error) {
-      console.error('Error updating todo:', error);
+      console.error("Error updating todo:", error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -66,7 +66,9 @@ export const EditTodo = ({ todo, onUpdate, onClose }) => {
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <Edit2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Edit Task</h3>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+              Edit Task
+            </h3>
           </div>
           <button
             onClick={onClose}
@@ -149,7 +151,7 @@ export const EditTodo = ({ todo, onUpdate, onClose }) => {
               disabled={loading}
               className="flex-1 btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Updating...' : 'Update Task'}
+              {loading ? "Updating..." : "Update Task"}
             </button>
           </div>
         </form>
